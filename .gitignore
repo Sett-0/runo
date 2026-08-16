@@ -1,0 +1,6 @@
+bin/
+build/
+GPATH
+GTAGS
+GRTAGS
+NppGTags.cfg
