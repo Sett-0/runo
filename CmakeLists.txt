@@ -1,23 +1,30 @@
 cmake_minimum_required(VERSION 3.16)
 project(runo LANGUAGES CXX)
 
+find_program(CCACHE_PROGRAM ccache)
+if(CCACHE_PROGRAM)
+    set(CMAKE_CXX_COMPILER_LAUNCHER ${CCACHE_PROGRAM})
+endif()
+
 set(CMAKE_CXX_STANDART 17)
 set(CMAKE_CXX_STANDART_REQUIRED ON)
 
 set(CMAKE_RUNTIME_OUTPUT_DIRECTORY_DEBUG   "${CMAKE_SOURCE_DIR}/bin/debug")
 set(CMAKE_RUNTIME_OUTPUT_DIRECTORY_RELEASE "${CMAKE_SOURCE_DIR}/bin/release")
 
-add_executable(runo src/main.cpp)
+add_executable(runo 
+	src/main.cpp 
+	src/MainWindow.cpp
+)
 
 # For CMake packages
 set(CMAKE_PREFIX_PATH "D:/Qt6")
 find_package(Qt6 REQUIRED COMPONENTS Widgets Gui Core)
 
-target_include_directories(runo PRIVATE include)
 target_link_libraries(runo PRIVATE Qt6::Widgets Qt6::Gui Qt6::Core)
 
 # For raw libraries
-# target_include_directories(TargetName PRIVATE include)
+target_include_directories(runo PRIVATE include)
 # target_link_directories(TargetName PRIVATE lib)
 # target_link_libraries(TargetName PRIVATE lib1 lib2 lib3)
 
