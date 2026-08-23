@@ -7,8 +7,10 @@
 #include <QMessageBox>
 #include <QLabel> 
 #include <QComboBox> 
+#include <QScrollArea>
 
 #include "MainWindow.h"
+#include "ChatList.h"
 
 MainWindow::MainWindow() {
 	setWindowTitle("Runo");
@@ -17,6 +19,34 @@ MainWindow::MainWindow() {
 	QWidget *centralWidget = new QWidget(this);
 	setCentralWidget(centralWidget);
 	
+	QHBoxLayout *mainLayout = new QHBoxLayout(centralWidget); // A memory ownership [a layout belongs to a widget]
+	
+	QVBoxLayout *leftPanel = new QVBoxLayout();
+	mainLayout->addLayout(leftPanel, 1);
+	
+	searchBar = new QLineEdit(centralWidget); // A memory ownership [a widget belongs to a widget]
+	searchBar->setPlaceholderText("Search");
+	leftPanel->addWidget(searchBar); // A visual ownership [a widget belongs to a layout]
+	
+	chatList = new ChatList(centralWidget);
+	for (size_t i = 0; i < 12; i++) chatList->add(QString("Friend %1").arg(i), i+100); 
+	leftPanel->addWidget(chatList->getWidget());
+	
+	QVBoxLayout *rightPanel = new QVBoxLayout();
+	mainLayout->addLayout(rightPanel, 3);
+	
+	statusBar = new QLabel("#Name, #Status", centralWidget);
+	rightPanel->addWidget(statusBar);
+	
+	messages = new QListWidget(centralWidget);
+	rightPanel->addWidget(messages);
+	
+	inputMessage = new QLineEdit(centralWidget);
+	inputMessage->setPlaceholderText("Write a message...");
+	rightPanel->addWidget(inputMessage);
+	
+	
+	/*
 	QVBoxLayout *mainLayout  = new QVBoxLayout(centralWidget);
 	QHBoxLayout *inputLayout = new QHBoxLayout();
 	
@@ -63,8 +93,10 @@ MainWindow::MainWindow() {
 	connect(searchBar,    &QLineEdit::textChanged,   this, &MainWindow::handleFilterText);
 	connect(deleteButton, &QPushButton::clicked,     this, &MainWindow::handleDeleteSelected);
 	connect(clearButton,  &QPushButton::clicked,     this, &MainWindow::handleClearAll);
+	*/
 }
 
+/*
 void MainWindow::handleAddTask() {
 	QString text = taskInput->text().trimmed();
 	if (text.isEmpty()) {
@@ -107,3 +139,4 @@ void MainWindow::handleClearAll() {
 void MainWindow::updateStatusCount() {
 	statusLabel->setText(QString("Total Tasks: %1").arg(taskList->count()));
 }
+*/

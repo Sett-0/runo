@@ -15,6 +15,7 @@ set(CMAKE_RUNTIME_OUTPUT_DIRECTORY_RELEASE "${CMAKE_SOURCE_DIR}/bin/release")
 add_executable(runo 
 	src/main.cpp 
 	src/MainWindow.cpp
+	src/ChatList.cpp
 )
 
 # For CMake packages
