@@ -22,16 +22,16 @@ ChatList::ChatList(QWidget *parentWidget) : parentWidget(parentWidget) {
 	scrollArea->setWidget(scrollContent);
 }
 
-void ChatList::add(const QString& title, unsigned int id) {
+void ChatList::add(const QString& title, size_t id) {
 	QWidget *chatBoxWidget = new QWidget(scrollContent);
 	chatBoxWidget->setMinimumHeight(75);
 	chatBoxWidget->setObjectName("chatBoxWidget");
 	chatBoxWidget->setStyleSheet(
 		"#chatBoxWidget {"
-		"	background-color: #181818;"
+		"	background-color: #282E33;"
 		"}"
 		"#chatBoxWidget:hover {"
-			"background-color: #656565;"
+			"background-color: #353C43;"
 		"}"
 	);
 
@@ -42,9 +42,6 @@ void ChatList::add(const QString& title, unsigned int id) {
 		"	background: transparent;"
 		"	border: none;"
 		"}"
-		// ":hover {"
-			// "background-color: #656565;"
-		// "}"
 	);
 	
 	QObject::connect(invisibleButton, &QPushButton::clicked, parentWidget, 
@@ -72,7 +69,7 @@ void ChatList::add(const QString& title, unsigned int id) {
 	chats.push_back(chatBox);
 }
 
-void ChatList::deleteById(unsigned int id) {
+void ChatList::deleteById(size_t id) {
 	for (size_t i = 0; i < chats.size(); i++) {
 		if (chats[i].id == id) {
 			delete chats[i].chatBoxWidget;
@@ -89,6 +86,37 @@ void ChatList::clearAll() {
 	chats.clear();
 }
 
-void ChatList::handleClickChatBox(unsigned int id) {
+void ChatList::handleClickChatBox(size_t id) {
+	// Reset previous chat box styles
+	if (focusedChatId) {
+		if (id == focusedChatId) {
+			return;
+		}
+		for (auto &chat : chats) {
+			if (chat.id == focusedChatId) {
+				chat.chatBoxWidget->setStyleSheet(
+					"#chatBoxWidget {"
+					"	background-color: #282E33;"
+					"}"
+					"#chatBoxWidget:hover {"
+						"background-color: #353C43;"
+					"}"
+				);
+				break;
+			}
+		}
+	}
+	// Visually focus selected chat box
+	for (auto &chat : chats) {
+		if (chat.id == id) {
+			chat.chatBoxWidget->setStyleSheet(
+				"#chatBoxWidget {"
+				"	background-color: #7154A3;"
+				"}"
+			);
+			focusedChatId = id;
+			break;
+		}
+	}
 	qDebug() << "Clicked chat with id" << id;
 }

@@ -29,7 +29,7 @@ MainWindow::MainWindow() {
 	leftPanel->addWidget(searchBar); // A visual ownership [a widget belongs to a layout]
 	
 	chatList = new ChatList(centralWidget);
-	for (size_t i = 0; i < 12; i++) chatList->add(QString("Friend %1").arg(i), i+100); 
+	for (size_t i = 1; i <= 12; i++) chatList->add(QString("Friend %1").arg(i), i+100); 
 	leftPanel->addWidget(chatList->getWidget());
 	
 	QVBoxLayout *rightPanel = new QVBoxLayout();
