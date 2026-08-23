@@ -20,6 +20,8 @@ public:
 	void deleteById(unsigned int id);
 	void clearAll();
 private:
+	void handleClickChatBox(unsigned int id);
+	
 	QWidget *parentWidget;
 	QScrollArea *scrollArea;
 	QWidget *scrollContent;

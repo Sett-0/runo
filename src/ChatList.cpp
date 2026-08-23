@@ -4,6 +4,7 @@
 #include <QVBoxLayout>
 #include <QHBoxLayout>
 #include <QLabel>
+#include <QPushButton>
 
 #include "ChatList.h"
 
@@ -16,7 +17,7 @@ ChatList::ChatList(QWidget *parentWidget) : parentWidget(parentWidget) {
 	scrollLayout = new QVBoxLayout(scrollContent);
 	
 	scrollLayout->setAlignment(Qt::AlignTop);
-	scrollLayout->setSpacing(10);
+	scrollLayout->setSpacing(0);
 	
 	scrollArea->setWidget(scrollContent);
 }
@@ -24,12 +25,45 @@ ChatList::ChatList(QWidget *parentWidget) : parentWidget(parentWidget) {
 void ChatList::add(const QString& title, unsigned int id) {
 	QWidget *chatBoxWidget = new QWidget(scrollContent);
 	chatBoxWidget->setMinimumHeight(75);
-	chatBoxWidget->setStyleSheet("background-color: #181818;");
+	chatBoxWidget->setObjectName("chatBoxWidget");
+	chatBoxWidget->setStyleSheet(
+		"#chatBoxWidget {"
+		"	background-color: #181818;"
+		"}"
+		"#chatBoxWidget:hover {"
+			"background-color: #656565;"
+		"}"
+	);
+
+	QPushButton* invisibleButton = new QPushButton(chatBoxWidget);
+	invisibleButton->setMinimumHeight(75);
+	invisibleButton->setStyleSheet(
+		"QPushButton {"
+		"	background: transparent;"
+		"	border: none;"
+		"}"
+		// ":hover {"
+			// "background-color: #656565;"
+		// "}"
+	);
+	
+	QObject::connect(invisibleButton, &QPushButton::clicked, parentWidget, 
+		[this, id]() { this->handleClickChatBox(id); } // "this->" in this case is "this" we captured with lambda. Can also skip writing it.
+	);
+	
+	QVBoxLayout *invisibleButtonLayout = new QVBoxLayout(chatBoxWidget);
+	invisibleButtonLayout->setContentsMargins(0, 0, 0, 0);
+	invisibleButtonLayout->addWidget(invisibleButton);
 
 	QLabel *titleLabel = new QLabel(title, chatBoxWidget);
-	titleLabel->setStyleSheet("color: white; font-weight: bold;");
+	titleLabel->setStyleSheet(
+		"QLabel {"
+		"	color: white;"
+		"	font-weight: bold;"
+		"}"
+	);
 	
-	QHBoxLayout *chatBoxLayout = new QHBoxLayout(chatBoxWidget);
+	QHBoxLayout *chatBoxLayout = new QHBoxLayout(invisibleButton);
 	chatBoxLayout->addWidget(titleLabel);
 	
 	scrollLayout->addWidget(chatBoxWidget);
@@ -53,4 +87,8 @@ void ChatList::clearAll() {
 		delete chat.chatBoxWidget;
 	}
 	chats.clear();
+}
+
+void ChatList::handleClickChatBox(unsigned int id) {
+	qDebug() << "Clicked chat with id" << id;
 }
