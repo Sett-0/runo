@@ -11,10 +11,11 @@
 
 #include "MainWindow.h"
 #include "ChatList.h"
+#include "ChatWindowHeader.h"
 
 MainWindow::MainWindow() {
 	setWindowTitle("Runo");
-	resize(800, 600);
+	resize(1280, 720);
 	
 	QWidget *centralWidget = new QWidget(this);
 	setCentralWidget(centralWidget);
@@ -35,8 +36,21 @@ MainWindow::MainWindow() {
 	QVBoxLayout *rightPanel = new QVBoxLayout();
 	mainLayout->addLayout(rightPanel, 3);
 	
-	statusBar = new QLabel("#Name, #Status", centralWidget);
-	rightPanel->addWidget(statusBar);
+	chatWindowHeader = new ChatWindowHeader(centralWidget);
+	rightPanel->addWidget(chatWindowHeader->getWidget());
+	
+	connect(chatList->getSignals(), &ChatBoxSignals::chatBoxSelected, this, 
+		[this](const QString& name) {
+			chatWindowHeader->updateChatInfo(name);
+		}
+	);
+	
+	connect(
+		chatWindowHeader->getSignals(), 
+		&ChatWindowHeaderSignals::deleteChatPressed, 
+		this, 
+		[this]() { chatList->deleteById(chatList->getFocusedChatId()); }
+	);
 	
 	messages = new QListWidget(centralWidget);
 	rightPanel->addWidget(messages);
@@ -44,6 +58,7 @@ MainWindow::MainWindow() {
 	inputMessage = new QLineEdit(centralWidget);
 	inputMessage->setPlaceholderText("Write a message...");
 	rightPanel->addWidget(inputMessage);
+}
 	
 	
 	/*
@@ -94,7 +109,6 @@ MainWindow::MainWindow() {
 	connect(deleteButton, &QPushButton::clicked,     this, &MainWindow::handleDeleteSelected);
 	connect(clearButton,  &QPushButton::clicked,     this, &MainWindow::handleClearAll);
 	*/
-}
 
 /*
 void MainWindow::handleAddTask() {

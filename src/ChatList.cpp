@@ -1,5 +1,4 @@
 #include <QScrollArea>
-#include <QString>
 #include <QWidget>
 #include <QVBoxLayout>
 #include <QHBoxLayout>
@@ -24,7 +23,7 @@ ChatList::ChatList(QWidget *parentWidget) : parentWidget(parentWidget) {
 
 void ChatList::add(const QString& title, size_t id) {
 	QWidget *chatBoxWidget = new QWidget(scrollContent);
-	chatBoxWidget->setMinimumHeight(75);
+	chatBoxWidget->setMinimumHeight(65);
 	chatBoxWidget->setObjectName("chatBoxWidget");
 	chatBoxWidget->setStyleSheet(
 		"#chatBoxWidget {"
@@ -36,7 +35,7 @@ void ChatList::add(const QString& title, size_t id) {
 	);
 
 	QPushButton* invisibleButton = new QPushButton(chatBoxWidget);
-	invisibleButton->setMinimumHeight(75);
+	invisibleButton->setMinimumHeight(65);
 	invisibleButton->setStyleSheet(
 		"QPushButton {"
 		"	background: transparent;"
@@ -45,7 +44,11 @@ void ChatList::add(const QString& title, size_t id) {
 	);
 	
 	QObject::connect(invisibleButton, &QPushButton::clicked, parentWidget, 
-		[this, id]() { this->handleClickChatBox(id); } // "this->" in this case is "this" we captured with lambda. Can also skip writing it.
+		[this, id, title]() { 
+			// "this->" in this case is "this" we captured with lambda. Can also skip writing it.
+			this->handleClickChatBox(id); 
+			emit chatBoxSignals.chatBoxSelected(title);
+		} 
 	);
 	
 	QVBoxLayout *invisibleButtonLayout = new QVBoxLayout(chatBoxWidget);
@@ -65,7 +68,7 @@ void ChatList::add(const QString& title, size_t id) {
 	
 	scrollLayout->addWidget(chatBoxWidget);
 	
-	ChatBox chatBox = { .chatBoxWidget = chatBoxWidget, .id = id };
+	ChatBox chatBox = { .chatBoxWidget = chatBoxWidget, .id = id, .name = title };
 	chats.push_back(chatBox);
 }
 
@@ -74,6 +77,7 @@ void ChatList::deleteById(size_t id) {
 		if (chats[i].id == id) {
 			delete chats[i].chatBoxWidget;
 			chats.erase(chats.begin() + i);
+			focusedChatId = 0;
 			return;
 		}
 	}
@@ -118,5 +122,13 @@ void ChatList::handleClickChatBox(size_t id) {
 			break;
 		}
 	}
-	qDebug() << "Clicked chat with id" << id;
+}
+
+QString ChatList::getNameById(size_t id) const {
+	for (const auto &chat : chats) {
+		if (chat.id == id) {
+			return chat.name;
+		}
+	}
+	return "";
 }

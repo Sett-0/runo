@@ -4,6 +4,7 @@
 
 class QLineEdit;
 class ChatList;
+class ChatWindowHeader;
 class QLabel;
 class QListWidget;
 
@@ -17,9 +18,9 @@ private:
 	// void handleClearAll();
 	// void updateStatusCount();
 	
-	QLineEdit   *searchBar;
-	ChatList    *chatList;
-	QLabel      *statusBar;
+	QLineEdit *searchBar;
+	ChatList *chatList;
+	ChatWindowHeader *chatWindowHeader;
 	QListWidget *messages;
-	QLineEdit   *inputMessage;
+	QLineEdit *inputMessage;
 };
