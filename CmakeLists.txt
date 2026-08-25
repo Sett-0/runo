@@ -16,10 +16,12 @@ set(CMAKE_RUNTIME_OUTPUT_DIRECTORY_RELEASE "${CMAKE_SOURCE_DIR}/bin/release")
 add_executable(runo 
 	src/main.cpp 
 	src/MainWindow.cpp
+	src/SearchBar.cpp
 	src/ChatList.cpp
 	src/ChatWindowHeader.cpp
 	
 	include/MainWindow.h
+	include/SearchBar.h
 	include/ChatList.h
 	include/ChatWindowHeader.h
 )

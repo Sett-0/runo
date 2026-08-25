@@ -30,6 +30,7 @@ public:
 	void add(const QString& title, size_t id);
 	void deleteById(size_t id);
 	void clearAll();
+	void filterChatList(const QString &query);
 private:
 	void handleClickChatBox(size_t id);
 	

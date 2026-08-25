@@ -10,6 +10,7 @@
 
 ChatWindowHeader::ChatWindowHeader(QWidget* parentWidget) : parentWidget(parentWidget) {
 	headerWidget = new QWidget(parentWidget);
+	headerWidget->setMinimumHeight(55);
 	headerWidget->setObjectName("headerWidget");
 	headerWidget->setStyleSheet(
 		"#headerWidget {"
@@ -18,16 +19,18 @@ ChatWindowHeader::ChatWindowHeader(QWidget* parentWidget) : parentWidget(parentW
 	);
 
 	headerWidgetLayout = new QHBoxLayout(headerWidget);
+	headerWidgetLayout->setContentsMargins(10, 5, 10, 5);
+	
 	chatInfoLayout = new QVBoxLayout();
 	chatInfoLayout->setContentsMargins(0, 0, 0, 0);
 	chatInfoLayout->setSpacing(0);
+	
 	headerWidgetLayout->addLayout(chatInfoLayout);
-	headerWidgetLayout->setContentsMargins(10, 5, 10, 5);
 	
 	name = new QLabel("#Name", headerWidget);
 	name->setStyleSheet(
 		"QLabel {"
-		"	color: white;"
+		"	color: #E9E9E9;"
 		"	font-size: 14px;"
 		"	font-weight: bold;"
 		"}"
@@ -47,8 +50,8 @@ ChatWindowHeader::ChatWindowHeader(QWidget* parentWidget) : parentWidget(parentW
 	
 	deleteChat = new QPushButton("Delete chat", headerWidget);
 	deleteChat->setStyleSheet(
-		"background-color: red;"
-		"border: 1px solid white;"
+		"background-color: #E90000;"
+		"border: 1px solid #E9E9E9;"
 		"border-radius: 6px;"
 		"font-size: 14px;"
 		"font-weight: bold;"
@@ -56,7 +59,7 @@ ChatWindowHeader::ChatWindowHeader(QWidget* parentWidget) : parentWidget(parentW
 	);
 	deleteChat->setMinimumSize(100, 35);
 	headerWidgetLayout->addWidget(deleteChat, 0, Qt::AlignRight);
-	QObject::connect(deleteChat, &QPushButton::clicked, parentWidget, [this]() { handleDeleteChat(); });
+	QObject::connect(deleteChat, &QPushButton::clicked, headerWidget, [this]() { handleDeleteChat(); });
 	
 	headerWidget->setHidden(true);
 };

@@ -10,6 +10,7 @@
 #include <QScrollArea>
 
 #include "MainWindow.h"
+#include "SearchBar.h"
 #include "ChatList.h"
 #include "ChatWindowHeader.h"
 
@@ -20,18 +21,22 @@ MainWindow::MainWindow() {
 	QWidget *centralWidget = new QWidget(this);
 	setCentralWidget(centralWidget);
 	
-	QHBoxLayout *mainLayout = new QHBoxLayout(centralWidget); // A memory ownership [a layout belongs to a widget]
+	QHBoxLayout *mainLayout = new QHBoxLayout(centralWidget);
+	mainLayout->setContentsMargins(0, 0, 0, 0);
+	mainLayout->setSpacing(0);
 	
 	QVBoxLayout *leftPanel = new QVBoxLayout();
 	mainLayout->addLayout(leftPanel, 1);
 	
-	searchBar = new QLineEdit(centralWidget); // A memory ownership [a widget belongs to a widget]
-	searchBar->setPlaceholderText("Search");
-	leftPanel->addWidget(searchBar); // A visual ownership [a widget belongs to a layout]
+	searchBar = new SearchBar(centralWidget);
+	leftPanel->addWidget(searchBar->getWidget());
 	
 	chatList = new ChatList(centralWidget);
 	for (size_t i = 1; i <= 12; i++) chatList->add(QString("Friend %1").arg(i), i+100); 
 	leftPanel->addWidget(chatList->getWidget());
+	
+	connect(searchBar->getSignals(), &SearchBarSignals::textChanged, this, 
+		[this](const QString& query) { chatList->filterChatList(query); });
 	
 	QVBoxLayout *rightPanel = new QVBoxLayout();
 	mainLayout->addLayout(rightPanel, 3);
@@ -40,17 +45,10 @@ MainWindow::MainWindow() {
 	rightPanel->addWidget(chatWindowHeader->getWidget());
 	
 	connect(chatList->getSignals(), &ChatBoxSignals::chatBoxSelected, this, 
-		[this](const QString& name) {
-			chatWindowHeader->updateChatInfo(name);
-		}
-	);
+		[this](const QString& name) { chatWindowHeader->updateChatInfo(name); });
 	
-	connect(
-		chatWindowHeader->getSignals(), 
-		&ChatWindowHeaderSignals::deleteChatPressed, 
-		this, 
-		[this]() { chatList->deleteById(chatList->getFocusedChatId()); }
-	);
+	connect(chatWindowHeader->getSignals(), &ChatWindowHeaderSignals::deleteChatPressed, this, 
+		[this]() { chatList->deleteById(chatList->getFocusedChatId()); });
 	
 	messages = new QListWidget(centralWidget);
 	rightPanel->addWidget(messages);

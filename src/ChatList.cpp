@@ -11,11 +11,64 @@ ChatList::ChatList(QWidget *parentWidget) : parentWidget(parentWidget) {
 	scrollArea = new QScrollArea(parentWidget);
 	scrollArea->setWidgetResizable(true);
 	scrollArea->setFrameShape(QFrame::NoFrame);
+	scrollArea->setStyleSheet(
+		"QScrollArea {"
+		"	background-color: #282E33;"
+		"}"
+		
+		// The vertical track
+		"QScrollBar:vertical {"
+		"    border: none;"
+		"    background: #3B4145;"
+		"    width: 4px;"
+		"    margin: 0px 0px 0px 0px;"
+		"    border-radius: 2px;"
+		"}"
+
+		// The slider handle
+		"QScrollBar::handle:vertical {"
+		"    background: #73777A;"
+		"    min-height: 30px;"
+		"    border-radius: 2px;"
+		"}"
+		"QScrollBar::handle:vertical:hover {"
+		"    background: #A2A5A7;"
+		"}"
+		"QScrollBar::handle:vertical:pressed {"
+		"    background: #A2A5A7;"
+		"}"
+
+		// The arrow buttons
+		"QScrollBar::sub-line:vertical,"
+		"QScrollBar::add-line:vertical {"
+		"    border: none;"
+		"    background: none;"
+		"    height: 0px;" 
+		"}"
+		"QScrollBar::up-arrow:vertical,"
+		"QScrollBar::down-arrow:vertical {"
+		"    border: none;"
+		"    background: none;"
+		"}"
+
+		// The track extensions
+		"QScrollBar::add-page:vertical,"
+		"QScrollBar::sub-page:vertical {"
+		"    background: none;"
+		"}"
+	);
 	
 	scrollContent = new QWidget(scrollArea);
+	scrollContent->setObjectName("scrollContent");
+	scrollContent->setStyleSheet(
+		"#scrollContent {"
+		"	background-color: #282E33;"
+		"}"
+	);
+
 	scrollLayout = new QVBoxLayout(scrollContent);
-	
 	scrollLayout->setAlignment(Qt::AlignTop);
+	scrollLayout->setContentsMargins(0, 0, 0, 0);
 	scrollLayout->setSpacing(0);
 	
 	scrollArea->setWidget(scrollContent);
@@ -43,7 +96,7 @@ void ChatList::add(const QString& title, size_t id) {
 		"}"
 	);
 	
-	QObject::connect(invisibleButton, &QPushButton::clicked, parentWidget, 
+	QObject::connect(invisibleButton, &QPushButton::clicked, scrollArea, 
 		[this, id, title]() { 
 			// "this->" in this case is "this" we captured with lambda. Can also skip writing it.
 			this->handleClickChatBox(id); 
@@ -131,4 +184,9 @@ QString ChatList::getNameById(size_t id) const {
 		}
 	}
 	return "";
+}
+
+void ChatList::filterChatList(const QString &query) {
+	// TODO: Use a better searching approach
+	// TODO: Implement this
 }

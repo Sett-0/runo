@@ -2,11 +2,12 @@
 
 #include <QMainWindow> 
 
-class QLineEdit;
+class SearchBar;
 class ChatList;
 class ChatWindowHeader;
 class QLabel;
 class QListWidget;
+class QLineEdit;
 
 class MainWindow : public QMainWindow {
 public:
@@ -18,7 +19,7 @@ private:
 	// void handleClearAll();
 	// void updateStatusCount();
 	
-	QLineEdit *searchBar;
+	SearchBar *searchBar;
 	ChatList *chatList;
 	ChatWindowHeader *chatWindowHeader;
 	QListWidget *messages;
