@@ -39,6 +39,7 @@ private:
 	QScrollArea *scrollArea;
 	QWidget *scrollContent;
 	QVBoxLayout *scrollLayout;
+	// TODO: Factor out the chats' data into a separate class ChatDataManager
 	std::vector<ChatBox> chats;
 	ChatBoxSignals chatBoxSignals;
 };

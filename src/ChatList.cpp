@@ -187,6 +187,16 @@ QString ChatList::getNameById(size_t id) const {
 }
 
 void ChatList::filterChatList(const QString &query) {
-	// TODO: Use a better searching approach
-	// TODO: Implement this
+	if (query.isEmpty()) {
+		for (auto &chat : chats) {
+			chat.chatBoxWidget->setHidden(false);
+		}
+		return;
+	}
+	
+	for (auto &chat : chats) {
+		if (!chat.name.contains(query.trimmed(), Qt::CaseInsensitive)) {
+			chat.chatBoxWidget->setHidden(true);
+		}
+	}
 }
