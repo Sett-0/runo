@@ -7,39 +7,41 @@
 class QScrollArea; 
 class QWidget; 
 class QVBoxLayout; 
+class ChatDataManager; 
+class ChatData; 
 
 struct ChatBox {
-	QWidget* chatBoxWidget;
-	size_t id;
-	QString name;
+	QWidget *chatBoxWidget;
+	const ChatData *chatData;
 };
 
 class ChatBoxSignals : public QObject {
 	Q_OBJECT
 signals:
-	void chatBoxSelected(const QString& name);
+	void chatBoxSelected(const QString &name);
 };
 
 class ChatList {
 public:
-	ChatList(QWidget *parentWidget);
+	ChatList(QWidget *parentWidget, ChatDataManager *chatDataManager);
 	QScrollArea* getWidget() const { return scrollArea; };
 	ChatBoxSignals* getSignals() { return &chatBoxSignals; };
 	size_t getFocusedChatId() const { return focusedChatId; };
-	QString getNameById(size_t id) const;
-	void add(const QString& title, size_t id);
-	void deleteById(size_t id);
+	QString getNameById(const size_t id);
+	void add(const ChatData &chatData);
+	void deleteById(const size_t id);
 	void clearAll();
 	void filterChatList(const QString &query);
 private:
-	void handleClickChatBox(size_t id);
+	void updateChatsData();
+	void handleClickChatBox(const size_t id);
 	
 	size_t focusedChatId = 0;
 	QWidget *parentWidget;
 	QScrollArea *scrollArea;
 	QWidget *scrollContent;
 	QVBoxLayout *scrollLayout;
-	// TODO: Factor out the chats' data into a separate class ChatDataManager
+	ChatDataManager *chatDataManager;
 	std::vector<ChatBox> chats;
 	ChatBoxSignals chatBoxSignals;
 };

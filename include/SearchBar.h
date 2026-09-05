@@ -19,8 +19,8 @@ public:
 	QWidget* getWidget() { return searchBarWidget; };
 	SearchBarSignals* getSignals() { return &searchBarSignals; };
 private:
-	QWidget* parentWidget;
-	QWidget* searchBarWidget;
+	QWidget *parentWidget;
+	QWidget *searchBarWidget;
 	QHBoxLayout *searchBarWidgetLayout;
 	QLineEdit *searchBar;
 	SearchBarSignals searchBarSignals;

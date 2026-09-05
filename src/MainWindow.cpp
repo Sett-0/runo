@@ -11,6 +11,7 @@
 
 #include "MainWindow.h"
 #include "SearchBar.h"
+#include "ChatDataManager.h"
 #include "ChatList.h"
 #include "ChatWindowHeader.h"
 
@@ -31,12 +32,13 @@ MainWindow::MainWindow() {
 	searchBar = new SearchBar(centralWidget);
 	leftPanel->addWidget(searchBar->getWidget());
 	
-	chatList = new ChatList(centralWidget);
-	for (size_t i = 1; i <= 12; i++) chatList->add(QString("Friend %1").arg(i), i+100); 
+	chatDataManager = new ChatDataManager();
+	
+	chatList = new ChatList(centralWidget, chatDataManager);
 	leftPanel->addWidget(chatList->getWidget());
 	
 	connect(searchBar->getSignals(), &SearchBarSignals::textChanged, this, 
-		[this](const QString& query) { chatList->filterChatList(query); });
+		[this](const QString &query) { chatList->filterChatList(query); });
 	
 	QVBoxLayout *rightPanel = new QVBoxLayout();
 	mainLayout->addLayout(rightPanel, 3);
@@ -45,7 +47,7 @@ MainWindow::MainWindow() {
 	rightPanel->addWidget(chatWindowHeader->getWidget());
 	
 	connect(chatList->getSignals(), &ChatBoxSignals::chatBoxSelected, this, 
-		[this](const QString& name) { chatWindowHeader->updateChatInfo(name); });
+		[this](const QString &name) { chatWindowHeader->updateChatInfo(name); });
 	
 	connect(chatWindowHeader->getSignals(), &ChatWindowHeaderSignals::deleteChatPressed, this, 
 		[this]() { chatList->deleteById(chatList->getFocusedChatId()); });

@@ -6,11 +6,13 @@
 #include <QPushButton>
 
 #include "ChatList.h"
+#include "ChatDataManager.h"
 
-ChatList::ChatList(QWidget *parentWidget) : parentWidget(parentWidget) {
+ChatList::ChatList(QWidget *parentWidget, ChatDataManager *chatDataManager) : parentWidget(parentWidget), chatDataManager(chatDataManager) {
 	scrollArea = new QScrollArea(parentWidget);
 	scrollArea->setWidgetResizable(true);
 	scrollArea->setFrameShape(QFrame::NoFrame);
+	// TODO: Move this css code to an external file.
 	scrollArea->setStyleSheet(
 		"QScrollArea {"
 		"	background-color: #282E33;"
@@ -72,9 +74,11 @@ ChatList::ChatList(QWidget *parentWidget) : parentWidget(parentWidget) {
 	scrollLayout->setSpacing(0);
 	
 	scrollArea->setWidget(scrollContent);
+	
+	for (const auto &chatData : chatDataManager->getChatData()) add(chatData);
 }
 
-void ChatList::add(const QString& title, size_t id) {
+void ChatList::add(const ChatData &chatData) {
 	QWidget *chatBoxWidget = new QWidget(scrollContent);
 	chatBoxWidget->setMinimumHeight(65);
 	chatBoxWidget->setObjectName("chatBoxWidget");
@@ -87,7 +91,7 @@ void ChatList::add(const QString& title, size_t id) {
 		"}"
 	);
 
-	QPushButton* invisibleButton = new QPushButton(chatBoxWidget);
+	QPushButton *invisibleButton = new QPushButton(chatBoxWidget);
 	invisibleButton->setMinimumHeight(65);
 	invisibleButton->setStyleSheet(
 		"QPushButton {"
@@ -96,11 +100,10 @@ void ChatList::add(const QString& title, size_t id) {
 		"}"
 	);
 	
-	QObject::connect(invisibleButton, &QPushButton::clicked, scrollArea, 
-		[this, id, title]() { 
-			// "this->" in this case is "this" we captured with lambda. Can also skip writing it.
-			this->handleClickChatBox(id); 
-			emit chatBoxSignals.chatBoxSelected(title);
+	QObject::connect(invisibleButton, &QPushButton::clicked, chatBoxWidget, 
+		[this, id = chatData.id, name = chatData.name]() { 
+			handleClickChatBox(id); 
+			emit chatBoxSignals.chatBoxSelected(name);
 		} 
 	);
 	
@@ -108,7 +111,7 @@ void ChatList::add(const QString& title, size_t id) {
 	invisibleButtonLayout->setContentsMargins(0, 0, 0, 0);
 	invisibleButtonLayout->addWidget(invisibleButton);
 
-	QLabel *titleLabel = new QLabel(title, chatBoxWidget);
+	QLabel *titleLabel = new QLabel(chatData.name, chatBoxWidget);
 	titleLabel->setStyleSheet(
 		"QLabel {"
 		"	color: white;"
@@ -121,15 +124,19 @@ void ChatList::add(const QString& title, size_t id) {
 	
 	scrollLayout->addWidget(chatBoxWidget);
 	
-	ChatBox chatBox = { .chatBoxWidget = chatBoxWidget, .id = id, .name = title };
+	ChatBox chatBox = { .chatBoxWidget = chatBoxWidget, .chatData = &chatData };
 	chats.push_back(chatBox);
 }
 
-void ChatList::deleteById(size_t id) {
+void ChatList::deleteById(const size_t id) {
 	for (size_t i = 0; i < chats.size(); i++) {
-		if (chats[i].id == id) {
+		if (chats[i].chatData->id == id) {
 			delete chats[i].chatBoxWidget;
 			chats.erase(chats.begin() + i);
+			
+			chatDataManager->deleteById(id);
+			updateChatsData();
+			
 			focusedChatId = 0;
 			return;
 		}
@@ -141,16 +148,29 @@ void ChatList::clearAll() {
 		delete chat.chatBoxWidget;
 	}
 	chats.clear();
+	chatDataManager->clearAll();
+	updateChatsData();
 }
 
-void ChatList::handleClickChatBox(size_t id) {
+// TODO: This is a relational mess. Storing a part of one vector inside another leads to 
+// the need to repopulate the chatBox's vector every time we modify the chatData. 
+// The data is stored by reference, but it is still taking the time to update the pointers. 
+// Maybe refactor this system to something better instead?
+void ChatList::updateChatsData() {
+	auto &chatsData = chatDataManager->getChatData();
+	for (size_t i = 0; i < chatsData.size(); i++) {
+		chats[i].chatData = &chatsData[i];
+	}
+}
+
+void ChatList::handleClickChatBox(const size_t id) {
 	// Reset previous chat box styles
 	if (focusedChatId) {
 		if (id == focusedChatId) {
 			return;
 		}
 		for (auto &chat : chats) {
-			if (chat.id == focusedChatId) {
+			if (chat.chatData->id == focusedChatId) {
 				chat.chatBoxWidget->setStyleSheet(
 					"#chatBoxWidget {"
 					"	background-color: #282E33;"
@@ -165,7 +185,7 @@ void ChatList::handleClickChatBox(size_t id) {
 	}
 	// Visually focus selected chat box
 	for (auto &chat : chats) {
-		if (chat.id == id) {
+		if (chat.chatData->id == id) {
 			chat.chatBoxWidget->setStyleSheet(
 				"#chatBoxWidget {"
 				"	background-color: #7154A3;"
@@ -177,10 +197,10 @@ void ChatList::handleClickChatBox(size_t id) {
 	}
 }
 
-QString ChatList::getNameById(size_t id) const {
+QString ChatList::getNameById(const size_t id) {
 	for (const auto &chat : chats) {
-		if (chat.id == id) {
-			return chat.name;
+		if (chat.chatData->id == id) {
+			return chat.chatData->name;
 		}
 	}
 	return "";
@@ -193,9 +213,9 @@ void ChatList::filterChatList(const QString &query) {
 		}
 		return;
 	}
-	
+
 	for (auto &chat : chats) {
-		if (!chat.name.contains(query.trimmed(), Qt::CaseInsensitive)) {
+		if (!chat.chatData->name.contains(query.trimmed(), Qt::CaseInsensitive)) {
 			chat.chatBoxWidget->setHidden(true);
 		}
 	}

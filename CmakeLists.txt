@@ -17,6 +17,7 @@ add_executable(runo
 	src/main.cpp 
 	src/MainWindow.cpp
 	src/SearchBar.cpp
+	src/ChatDataManager.cpp
 	src/ChatList.cpp
 	src/ChatWindowHeader.cpp
 	

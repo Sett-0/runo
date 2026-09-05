@@ -8,7 +8,7 @@
 
 #include "ChatWindowHeader.h"
 
-ChatWindowHeader::ChatWindowHeader(QWidget* parentWidget) : parentWidget(parentWidget) {
+ChatWindowHeader::ChatWindowHeader(QWidget *parentWidget) : parentWidget(parentWidget) {
 	headerWidget = new QWidget(parentWidget);
 	headerWidget->setMinimumHeight(55);
 	headerWidget->setObjectName("headerWidget");

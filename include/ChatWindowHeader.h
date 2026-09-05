@@ -15,19 +15,19 @@ signals:
 
 class ChatWindowHeader {
 public:
-	ChatWindowHeader(QWidget* parentWidget);
+	ChatWindowHeader(QWidget *parentWidget);
 	QWidget* getWidget() const { return headerWidget; };
 	ChatWindowHeaderSignals* getSignals() { return &chatWindowHeaderSignals; };
 	void updateChatInfo(const QString &name);
 private:
 	void handleDeleteChat();
 
-	QWidget* parentWidget;
-	QWidget* headerWidget;
-	QHBoxLayout* headerWidgetLayout;
-	QVBoxLayout* chatInfoLayout;
-	QLabel* name;
-	QLabel* status;
-	QPushButton* deleteChat;
+	QWidget *parentWidget;
+	QWidget *headerWidget;
+	QHBoxLayout *headerWidgetLayout;
+	QVBoxLayout *chatInfoLayout;
+	QLabel *name;
+	QLabel *status;
+	QPushButton *deleteChat;
 	ChatWindowHeaderSignals chatWindowHeaderSignals;
 };

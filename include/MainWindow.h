@@ -3,6 +3,7 @@
 #include <QMainWindow> 
 
 class SearchBar;
+class ChatDataManager;
 class ChatList;
 class ChatWindowHeader;
 class QLabel;
@@ -13,13 +14,8 @@ class MainWindow : public QMainWindow {
 public:
 	MainWindow();
 private:
-	// void handleAddTask();
-	// void handleFilterText(const QString &pattern);
-	// void handleDeleteSelected();
-	// void handleClearAll();
-	// void updateStatusCount();
-	
 	SearchBar *searchBar;
+	ChatDataManager *chatDataManager;
 	ChatList *chatList;
 	ChatWindowHeader *chatWindowHeader;
 	QListWidget *messages;
