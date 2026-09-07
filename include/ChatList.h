@@ -2,8 +2,8 @@
 
 #include <vector>
 #include <QObject>
-#include <QString>
 
+class QString;
 class QScrollArea; 
 class QWidget; 
 class QVBoxLayout; 
@@ -35,6 +35,7 @@ public:
 private:
 	void updateChatsData();
 	void handleClickChatBox(const size_t id);
+	QString loadStyleSheet(const char *filePath);
 	
 	size_t focusedChatId = 0;
 	QWidget *parentWidget;

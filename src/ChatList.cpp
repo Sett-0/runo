@@ -1,64 +1,24 @@
+#include <QString>
 #include <QScrollArea>
 #include <QWidget>
 #include <QVBoxLayout>
 #include <QHBoxLayout>
 #include <QLabel>
 #include <QPushButton>
+#include <sstream>
+#include <fstream>
 
 #include "ChatList.h"
 #include "ChatDataManager.h"
 
 ChatList::ChatList(QWidget *parentWidget, ChatDataManager *chatDataManager) : parentWidget(parentWidget), chatDataManager(chatDataManager) {
 	scrollArea = new QScrollArea(parentWidget);
+	
 	scrollArea->setWidgetResizable(true);
 	scrollArea->setFrameShape(QFrame::NoFrame);
-	// TODO: Move this css code to an external file.
-	scrollArea->setStyleSheet(
-		"QScrollArea {"
-		"	background-color: #282E33;"
-		"}"
-		
-		// The vertical track
-		"QScrollBar:vertical {"
-		"    border: none;"
-		"    background: #3B4145;"
-		"    width: 4px;"
-		"    margin: 0px 0px 0px 0px;"
-		"    border-radius: 2px;"
-		"}"
-
-		// The slider handle
-		"QScrollBar::handle:vertical {"
-		"    background: #73777A;"
-		"    min-height: 30px;"
-		"    border-radius: 2px;"
-		"}"
-		"QScrollBar::handle:vertical:hover {"
-		"    background: #A2A5A7;"
-		"}"
-		"QScrollBar::handle:vertical:pressed {"
-		"    background: #A2A5A7;"
-		"}"
-
-		// The arrow buttons
-		"QScrollBar::sub-line:vertical,"
-		"QScrollBar::add-line:vertical {"
-		"    border: none;"
-		"    background: none;"
-		"    height: 0px;" 
-		"}"
-		"QScrollBar::up-arrow:vertical,"
-		"QScrollBar::down-arrow:vertical {"
-		"    border: none;"
-		"    background: none;"
-		"}"
-
-		// The track extensions
-		"QScrollBar::add-page:vertical,"
-		"QScrollBar::sub-page:vertical {"
-		"    background: none;"
-		"}"
-	);
+	QString scrollAreaStyle = loadStyleSheet("assets/scrollArea.qss");
+	if (!scrollAreaStyle.isEmpty()) 
+		scrollArea->setStyleSheet(scrollAreaStyle);
 	
 	scrollContent = new QWidget(scrollArea);
 	scrollContent->setObjectName("scrollContent");
@@ -220,3 +180,16 @@ void ChatList::filterChatList(const QString &query) {
 		}
 	}
 }
+
+QString ChatList::loadStyleSheet(const char *filePath) {
+	std::ifstream file(filePath);
+	if (!file.is_open()) {
+		return QString();
+	}
+	
+	std::stringstream buffer;
+	buffer << file.rdbuf();
+	
+	return QString::fromStdString(buffer.str());
+}
+
