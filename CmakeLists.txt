@@ -23,6 +23,7 @@ add_executable(runo
 	src/ChatWindowHeader.cpp
 	
 	include/MainWindow.h
+	include/Utils.h
 	include/TopControl.h
 	include/SearchBar.h
 	include/ChatList.h

@@ -7,10 +7,11 @@
 #include <QMessageBox>
 
 #include "ChatWindowHeader.h"
+#include "Utils.h"
 
 ChatWindowHeader::ChatWindowHeader(QWidget *parentWidget) : parentWidget(parentWidget) {
 	headerWidget = new QWidget(parentWidget);
-	headerWidget->setMinimumHeight(55);
+	headerWidget->setMinimumHeight(Utils::noSystemDisplayScale(55));
 	headerWidget->setObjectName("headerWidget");
 	headerWidget->setStyleSheet(
 		"#headerWidget {"
@@ -57,7 +58,7 @@ ChatWindowHeader::ChatWindowHeader(QWidget *parentWidget) : parentWidget(parentW
 		"font-weight: bold;"
 		"color: white;"
 	);
-	deleteChat->setMinimumSize(100, 35);
+	deleteChat->setMinimumSize(100, Utils::noSystemDisplayScale(35));
 	headerWidgetLayout->addWidget(deleteChat, 0, Qt::AlignRight);
 	QObject::connect(deleteChat, &QPushButton::clicked, headerWidget, [this]() { handleDeleteChat(); });
 	

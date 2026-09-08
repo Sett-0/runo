@@ -4,10 +4,11 @@
 #include <QString>
 
 #include "SearchBar.h"
+#include "Utils.h"
 
 SearchBar::SearchBar(QWidget *parentWidget) : parentWidget(parentWidget) {
 	searchBarWidget = new QWidget(parentWidget);
-	searchBarWidget->setMinimumHeight(55);
+	searchBarWidget->setMinimumHeight(Utils::noSystemDisplayScale(55));
 	searchBarWidget->setObjectName("searchBarWidget");
 	searchBarWidget->setStyleSheet(
 		"#searchBarWidget {"
@@ -31,7 +32,7 @@ SearchBar::SearchBar(QWidget *parentWidget) : parentWidget(parentWidget) {
 		"	padding-right: 12px;"
 		"}"
 	);
-	searchBar->setMinimumHeight(35);
+	searchBar->setMinimumHeight(Utils::noSystemDisplayScale(35));
 	searchBarWidgetLayout->addWidget(searchBar);
 	
 	QObject::connect(searchBar, &QLineEdit::textChanged, searchBarWidget, 

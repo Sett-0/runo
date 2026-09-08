@@ -7,10 +7,11 @@
 #include <sstream>
 
 #include "TopControl.h"
+#include "Utils.h"
 
 TopControl::TopControl(QWidget *parentWidget) : parentWidget(parentWidget) {
 	topControlWidget = new QWidget(parentWidget);
-	topControlWidget->setFixedHeight(30);
+	topControlWidget->setFixedHeight(Utils::noSystemDisplayScale(30));
 	topControlWidget->setObjectName("topControlWidget");
 	QString topControlWidgetStyle = loadStyleSheet("assets/topControl.qss");
 	if (!topControlWidgetStyle.isEmpty()) 
@@ -22,10 +23,10 @@ TopControl::TopControl(QWidget *parentWidget) : parentWidget(parentWidget) {
 	
 	windowTitle = new QLabel("Runo", topControlWidget);
 	windowTitle->setObjectName("windowTitle");
-	windowTitle->setFixedHeight(30);
+	windowTitle->setFixedHeight(Utils::noSystemDisplayScale(30));
 	topControlWidgetLayout->addWidget(windowTitle);
 	
-	//topControlWidgetLayout->addStretch();
+	topControlWidgetLayout->addStretch();
 	
 	minimizeWindowButton = new QPushButton("—", topControlWidget);
 	maximizeWindowButton = new QPushButton("⬜", topControlWidget);
@@ -35,9 +36,9 @@ TopControl::TopControl(QWidget *parentWidget) : parentWidget(parentWidget) {
 	maximizeWindowButton->setObjectName("maximizeWindowButton");
 	closeWindowButton   ->setObjectName("closeWindowButton");
 	
-	minimizeWindowButton->setFixedSize(45, 30);
-	maximizeWindowButton->setFixedSize(45, 30);
-	closeWindowButton   ->setFixedSize(45, 30);
+	minimizeWindowButton->setFixedSize(Utils::noSystemDisplayScale(45), Utils::noSystemDisplayScale(30));
+	maximizeWindowButton->setFixedSize(Utils::noSystemDisplayScale(45), Utils::noSystemDisplayScale(30));
+	closeWindowButton   ->setFixedSize(Utils::noSystemDisplayScale(45), Utils::noSystemDisplayScale(30));
 	
 	QObject::connect(minimizeWindowButton, &QPushButton::clicked, topControlWidget, 
 		[this]() { emit topControlSignals.minimizeWindow(); });

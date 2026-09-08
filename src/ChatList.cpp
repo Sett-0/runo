@@ -10,6 +10,7 @@
 
 #include "ChatList.h"
 #include "ChatDataManager.h"
+#include "Utils.h"
 
 ChatList::ChatList(QWidget *parentWidget, ChatDataManager *chatDataManager) : parentWidget(parentWidget), chatDataManager(chatDataManager) {
 	scrollArea = new QScrollArea(parentWidget);
@@ -40,7 +41,7 @@ ChatList::ChatList(QWidget *parentWidget, ChatDataManager *chatDataManager) : pa
 
 void ChatList::add(const ChatData &chatData) {
 	QWidget *chatBoxWidget = new QWidget(scrollContent);
-	chatBoxWidget->setMinimumHeight(65);
+	chatBoxWidget->setMinimumHeight(Utils::noSystemDisplayScale(65));
 	chatBoxWidget->setObjectName("chatBoxWidget");
 	chatBoxWidget->setStyleSheet(
 		"#chatBoxWidget {"
@@ -52,7 +53,7 @@ void ChatList::add(const ChatData &chatData) {
 	);
 
 	QPushButton *invisibleButton = new QPushButton(chatBoxWidget);
-	invisibleButton->setMinimumHeight(65);
+	invisibleButton->setMinimumHeight(Utils::noSystemDisplayScale(65));
 	invisibleButton->setStyleSheet(
 		"QPushButton {"
 		"	background: transparent;"
