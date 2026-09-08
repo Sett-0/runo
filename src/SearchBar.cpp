@@ -17,7 +17,7 @@ SearchBar::SearchBar(QWidget *parentWidget) : parentWidget(parentWidget) {
 	
 	searchBarWidgetLayout = new QHBoxLayout(searchBarWidget);
 	
-	searchBar = new QLineEdit(parentWidget);
+	searchBar = new QLineEdit(searchBarWidget);
 	searchBar->setPlaceholderText("Search");
 	searchBar->setObjectName("searchBar");
 	searchBar->setStyleSheet(

@@ -1,0 +1,27 @@
+#topControlWidget {
+    background-color: #3a4047;
+}
+
+#windowTitle {
+	color: #a1a1aa;
+    font-size: 11px;
+	font-weight: bold;
+}
+
+#minimizeWindowButton, #maximizeWindowButton, #closeWindowButton {
+    background: transparent;
+    border: none;
+    border-radius: 0px;
+    color: #8b9096;
+    font-size: 11px;
+}
+
+#minimizeWindowButton:hover, #maximizeWindowButton:hover {
+    background-color: #4c535b;
+    color: #e0e0e0;
+}
+
+#closeWindowButton:hover {
+    background-color: #e81123;
+    color: #e0e0e0;
+}
