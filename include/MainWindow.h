@@ -17,7 +17,9 @@ public:
 protected:
 	void mousePressEvent(QMouseEvent *event) override;
 	void mouseMoveEvent(QMouseEvent *event) override;
+	void changeEvent(QEvent *event) override;
 private:
+	QRect normalGeometry;
 	QPoint dragPosition;
 	TopControl *topControl;
 	SearchBar *searchBar;

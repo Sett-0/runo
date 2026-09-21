@@ -41,7 +41,7 @@ ChatList::ChatList(QWidget *parentWidget, ChatDataManager *chatDataManager) : pa
 
 void ChatList::add(const ChatData &chatData) {
 	QWidget *chatBoxWidget = new QWidget(scrollContent);
-	chatBoxWidget->setMinimumHeight(Utils::noSystemDisplayScale(65));
+	chatBoxWidget->setMinimumHeight(Utils::noSystemDisplayScale(77));
 	chatBoxWidget->setObjectName("chatBoxWidget");
 	chatBoxWidget->setStyleSheet(
 		"#chatBoxWidget {"
@@ -53,7 +53,7 @@ void ChatList::add(const ChatData &chatData) {
 	);
 
 	QPushButton *invisibleButton = new QPushButton(chatBoxWidget);
-	invisibleButton->setMinimumHeight(Utils::noSystemDisplayScale(65));
+	invisibleButton->setMinimumHeight(Utils::noSystemDisplayScale(77));
 	invisibleButton->setStyleSheet(
 		"QPushButton {"
 		"	background: transparent;"

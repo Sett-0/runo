@@ -20,6 +20,7 @@
 MainWindow::MainWindow() {
 	setWindowTitle("Runo");
 	resize(1280, 720);
+	normalGeometry = geometry();
 	setWindowFlag(Qt::FramelessWindowHint);
 	
 	QWidget *centralWidget = new QWidget(this);
@@ -34,7 +35,13 @@ MainWindow::MainWindow() {
 	
 	connect(topControl->getSignals(), &TopControlSignals::minimizeWindow, this, &QMainWindow::showMinimized);
 	connect(topControl->getSignals(), &TopControlSignals::maximizeWindow, this, [this]() {
-		isMaximized() ? showNormal() : showMaximized();
+		if (isMaximized()) {
+			showNormal();
+			setGeometry(normalGeometry);
+		} else {
+			normalGeometry = geometry();
+			showMaximized();
+		}
 	});
 	connect(topControl->getSignals(), &TopControlSignals::closeWindow, this, &QMainWindow::close);
 	
@@ -86,7 +93,42 @@ void MainWindow::mousePressEvent(QMouseEvent *event) {
 
 void MainWindow::mouseMoveEvent(QMouseEvent *event) {
 	if (event->buttons() & Qt::LeftButton && event->position().y() < 30) {
+		if (isMaximized()) {
+			double mousePosXPercentage = static_cast<double>(event->position().x()) / width();
+			
+			topControl->getMaximizeWindowButton()->setText("🗖");
+			showNormal();
+			setGeometry(normalGeometry);
+			
+			size_t posX = static_cast<size_t>(width() * mousePosXPercentage);
+			size_t posY = event->globalPosition().y();
+			
+			dragPosition = QPoint(posX, posY);
+
+			move(event->globalPosition().toPoint() - dragPosition);
+			event->accept();
+			return;
+		}
 		move(event->globalPosition().toPoint() - dragPosition);
 		event->accept();
 	}
+}
+
+void MainWindow::changeEvent(QEvent *event) {
+	if (event->type() == QEvent::WindowStateChange) {
+        QWindowStateChangeEvent *stateEvent = static_cast<QWindowStateChangeEvent*>(event);
+        bool wasMinimized = (stateEvent->oldState() & Qt::WindowMinimized);
+		
+		if (!wasMinimized) {
+			if (isMaximized()) {
+				topControl->getMaximizeWindowButton()->setText("🗗");
+			} else {
+				topControl->getMaximizeWindowButton()->setText("🗖");
+			}
+		} else {
+			bool wasMaximized = (stateEvent->oldState() & Qt::WindowMaximized);
+			wasMaximized ? showMaximized() : showNormal();
+		}
+	}
+	QMainWindow::changeEvent(event);
 }

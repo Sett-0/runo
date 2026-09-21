@@ -20,6 +20,7 @@ public:
 	TopControl(QWidget *parentWidget);
 	QWidget* getWidget() { return topControlWidget; };
 	TopControlSignals* getSignals() { return &topControlSignals; };
+	QPushButton* getMaximizeWindowButton() { return maximizeWindowButton; };
 private:
 	QString loadStyleSheet(const char *filePath);
 

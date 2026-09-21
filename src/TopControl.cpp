@@ -29,7 +29,7 @@ TopControl::TopControl(QWidget *parentWidget) : parentWidget(parentWidget) {
 	topControlWidgetLayout->addStretch();
 	
 	minimizeWindowButton = new QPushButton("—", topControlWidget);
-	maximizeWindowButton = new QPushButton("⬜", topControlWidget);
+	maximizeWindowButton = new QPushButton("🗖", topControlWidget);
 	closeWindowButton    = new QPushButton("✕", topControlWidget);
 	
 	minimizeWindowButton->setObjectName("minimizeWindowButton");

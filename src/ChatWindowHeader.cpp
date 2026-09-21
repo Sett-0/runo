@@ -11,7 +11,7 @@
 
 ChatWindowHeader::ChatWindowHeader(QWidget *parentWidget) : parentWidget(parentWidget) {
 	headerWidget = new QWidget(parentWidget);
-	headerWidget->setMinimumHeight(Utils::noSystemDisplayScale(55));
+	headerWidget->setMinimumHeight(Utils::noSystemDisplayScale(67));
 	headerWidget->setObjectName("headerWidget");
 	headerWidget->setStyleSheet(
 		"#headerWidget {"
