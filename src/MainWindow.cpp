@@ -114,6 +114,19 @@ void MainWindow::mouseMoveEvent(QMouseEvent *event) {
 	}
 }
 
+void MainWindow::mouseDoubleClickEvent(QMouseEvent *event) {
+	if (event->button() == Qt::LeftButton && event->position().y() < 30) {
+		if (isMaximized()) {
+			showNormal();
+			setGeometry(normalGeometry);
+		} else {
+			normalGeometry = geometry();
+			showMaximized();
+		}
+		event->accept();
+	}
+}
+
 void MainWindow::changeEvent(QEvent *event) {
 	if (event->type() == QEvent::WindowStateChange) {
         QWindowStateChangeEvent *stateEvent = static_cast<QWindowStateChangeEvent*>(event);
