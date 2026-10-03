@@ -21,6 +21,7 @@ add_executable(runo
 	src/ChatDataManager.cpp
 	src/ChatList.cpp
 	src/ChatWindowHeader.cpp
+	src/ChatWindow.cpp
 	
 	include/MainWindow.h
 	include/Utils.h
@@ -28,6 +29,7 @@ add_executable(runo
 	include/SearchBar.h
 	include/ChatList.h
 	include/ChatWindowHeader.h
+	include/ChatWindow.h
 )
 
 # For CMake packages

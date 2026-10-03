@@ -7,6 +7,7 @@ class SearchBar;
 class ChatDataManager;
 class ChatList;
 class ChatWindowHeader;
+class ChatWindow;
 class QLabel;
 class QListWidget;
 class QLineEdit;
@@ -27,6 +28,6 @@ private:
 	ChatDataManager *chatDataManager;
 	ChatList *chatList;
 	ChatWindowHeader *chatWindowHeader;
-	QListWidget *messages;
+	ChatWindow *chatWindow;
 	QLineEdit *inputMessage;
 };

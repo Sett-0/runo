@@ -47,9 +47,9 @@ TopControl::TopControl(QWidget *parentWidget) : parentWidget(parentWidget) {
 	QObject::connect(closeWindowButton, &QPushButton::clicked, topControlWidget, 
 		[this]() { emit topControlSignals.closeWindow(); });
 
-	topControlWidgetLayout->addWidget(minimizeWindowButton);
-	topControlWidgetLayout->addWidget(maximizeWindowButton);
-	topControlWidgetLayout->addWidget(closeWindowButton);
+	topControlWidgetLayout->addWidget(minimizeWindowButton, Qt::AlignRight);
+	topControlWidgetLayout->addWidget(maximizeWindowButton, Qt::AlignRight);
+	topControlWidgetLayout->addWidget(closeWindowButton,    Qt::AlignRight);
 }
 
 QString TopControl::loadStyleSheet(const char *filePath) {

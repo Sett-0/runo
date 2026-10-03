@@ -16,6 +16,7 @@
 #include "ChatDataManager.h"
 #include "ChatList.h"
 #include "ChatWindowHeader.h"
+#include "ChatWindow.h"
 
 MainWindow::MainWindow() {
 	setWindowTitle("Runo");
@@ -76,8 +77,8 @@ MainWindow::MainWindow() {
 	connect(chatWindowHeader->getSignals(), &ChatWindowHeaderSignals::deleteChatPressed, this, 
 		[this]() { chatList->deleteById(chatList->getFocusedChatId()); });
 	
-	messages = new QListWidget(centralWidget);
-	rightPanel->addWidget(messages);
+	chatWindow = new ChatWindow(centralWidget);
+	rightPanel->addWidget(chatWindow->getWidget());
 	
 	inputMessage = new QLineEdit(centralWidget);
 	inputMessage->setPlaceholderText("Write a message...");
