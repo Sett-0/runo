@@ -84,6 +84,9 @@ void ChatWindowHeader::handleDeleteChat() {
 		QMessageBox::No
 	);
 	
+	// TODO: What if it fails to delete the chat? 
+	// I should at least be geting some sort of a success/fail response before hiding the chat. 
+	// The same goes for the InputMessage hiding itself, I think.
 	if (answer == QMessageBox::Yes) {
 		headerWidget->setHidden(true);
 		emit chatWindowHeaderSignals.deleteChatPressed();

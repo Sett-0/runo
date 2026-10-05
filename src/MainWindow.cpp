@@ -17,6 +17,7 @@
 #include "ChatList.h"
 #include "ChatWindowHeader.h"
 #include "ChatWindow.h"
+#include "InputMessage.h"
 
 MainWindow::MainWindow() {
 	setWindowTitle("Runo");
@@ -34,18 +35,6 @@ MainWindow::MainWindow() {
 	topControl = new TopControl(centralWidget);
 	rootLayout->addWidget(topControl->getWidget());
 	
-	connect(topControl->getSignals(), &TopControlSignals::minimizeWindow, this, &QMainWindow::showMinimized);
-	connect(topControl->getSignals(), &TopControlSignals::maximizeWindow, this, [this]() {
-		if (isMaximized()) {
-			showNormal();
-			setGeometry(normalGeometry);
-		} else {
-			normalGeometry = geometry();
-			showMaximized();
-		}
-	});
-	connect(topControl->getSignals(), &TopControlSignals::closeWindow, this, &QMainWindow::close);
-	
 	QHBoxLayout *mainLayout = new QHBoxLayout();
 	mainLayout->setContentsMargins(0, 0, 0, 0);
 	mainLayout->setSpacing(0);
@@ -62,27 +51,42 @@ MainWindow::MainWindow() {
 	chatList = new ChatList(centralWidget, chatDataManager);
 	leftPanel->addWidget(chatList->getWidget());
 	
-	connect(searchBar->getSignals(), &SearchBarSignals::textChanged, this, 
-		[this](const QString &query) { chatList->filterChatList(query); });
-	
 	QVBoxLayout *rightPanel = new QVBoxLayout();
 	mainLayout->addLayout(rightPanel, 3);
 	
 	chatWindowHeader = new ChatWindowHeader(centralWidget);
 	rightPanel->addWidget(chatWindowHeader->getWidget());
 	
-	connect(chatList->getSignals(), &ChatBoxSignals::chatBoxSelected, this, 
-		[this](const QString &name) { chatWindowHeader->updateChatInfo(name); });
-	
-	connect(chatWindowHeader->getSignals(), &ChatWindowHeaderSignals::deleteChatPressed, this, 
-		[this]() { chatList->deleteById(chatList->getFocusedChatId()); });
-	
 	chatWindow = new ChatWindow(centralWidget);
 	rightPanel->addWidget(chatWindow->getWidget());
 	
-	inputMessage = new QLineEdit(centralWidget);
-	inputMessage->setPlaceholderText("Write a message...");
-	rightPanel->addWidget(inputMessage);
+	inputMessage = new InputMessage(centralWidget);
+	rightPanel->addWidget(inputMessage->getWidget());
+	
+	connect(topControl->getSignals(), &TopControlSignals::minimizeWindow, this, &QMainWindow::showMinimized);
+	connect(topControl->getSignals(), &TopControlSignals::maximizeWindow, this, [this]() {
+		if (isMaximized()) {
+			showNormal();
+			setGeometry(normalGeometry);
+		} else {
+			normalGeometry = geometry();
+			showMaximized();
+		}
+	});
+	connect(topControl->getSignals(), &TopControlSignals::closeWindow, this, &QMainWindow::close);
+	
+	connect(searchBar->getSignals(), &SearchBarSignals::textChanged, this, 
+		[this](const QString &query) { chatList->filterChatList(query); });
+	
+	connect(chatList->getSignals(), &ChatBoxSignals::chatBoxSelected, this, [this](const QString &name) { 
+		chatWindowHeader->updateChatInfo(name);
+		inputMessage->showWidget();
+	});
+	
+	connect(chatWindowHeader->getSignals(), &ChatWindowHeaderSignals::deleteChatPressed, this, [this]() { 
+		inputMessage->hideWidget();
+		chatList->deleteById(chatList->getFocusedChatId()); 
+	});
 }
 
 void MainWindow::mousePressEvent(QMouseEvent *event) {

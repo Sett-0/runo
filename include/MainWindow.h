@@ -10,7 +10,7 @@ class ChatWindowHeader;
 class ChatWindow;
 class QLabel;
 class QListWidget;
-class QLineEdit;
+class InputMessage;
 
 class MainWindow : public QMainWindow {
 public:
@@ -29,5 +29,5 @@ private:
 	ChatList *chatList;
 	ChatWindowHeader *chatWindowHeader;
 	ChatWindow *chatWindow;
-	QLineEdit *inputMessage;
+	InputMessage *inputMessage;
 };
