@@ -8,7 +8,8 @@ ChatDataManager::ChatDataManager() {
 	for (size_t i = 1; i <= 15; i++) {
 		size_t id = i + 100;
 		QString name = QString("Friend %1").arg(i);
-		ChatData chatData = { id, name };
+		QString iconPath = QString("assets/default_avatar.png");
+		ChatData chatData = { id, name, iconPath };
 		add(chatData);
 	}
 }

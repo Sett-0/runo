@@ -3,6 +3,8 @@
 #include <QWidget>
 #include <QVBoxLayout>
 #include <QHBoxLayout>
+#include <QPixmap>
+#include <QPainter>
 #include <QLabel>
 #include <QPushButton>
 #include <sstream>
@@ -45,10 +47,10 @@ void ChatList::add(const ChatData &chatData) {
 	chatBoxWidget->setObjectName("chatBoxWidget");
 	chatBoxWidget->setStyleSheet(
 		"#chatBoxWidget {"
-		"	background-color: #282E33;"
+		"	background-color: #282e33;"
 		"}"
 		"#chatBoxWidget:hover {"
-			"background-color: #353C43;"
+			"background-color: #353c43;"
 		"}"
 	);
 
@@ -71,7 +73,37 @@ void ChatList::add(const ChatData &chatData) {
 	QVBoxLayout *invisibleButtonLayout = new QVBoxLayout(chatBoxWidget);
 	invisibleButtonLayout->setContentsMargins(0, 0, 0, 0);
 	invisibleButtonLayout->addWidget(invisibleButton);
-
+	
+	QPixmap chatIconPixmap(chatData.iconPath);
+	int iconSize = Utils::noSystemDisplayScale(60);
+	chatIconPixmap = chatIconPixmap.scaled(
+		iconSize, iconSize,
+		Qt::KeepAspectRatioByExpanding,
+		Qt::SmoothTransformation
+	);
+	
+	QPixmap chatRoundIconPixmap(iconSize, iconSize);
+	chatRoundIconPixmap.fill(Qt::transparent);
+	
+	QPainter painter(&chatRoundIconPixmap);
+	
+	painter.setRenderHint(QPainter::Antialiasing, true);
+	painter.setRenderHint(QPainter::SmoothPixmapTransform, true);
+	
+	painter.setBrush(Qt::black);
+	painter.setPen(Qt::NoPen);
+	
+	painter.drawEllipse(0, 0, iconSize, iconSize);
+	
+	painter.setCompositionMode(QPainter::CompositionMode_SourceIn);
+	painter.drawPixmap(0, 0, chatIconPixmap);
+	
+	painter.end();
+	
+	QLabel *chatIcon = new QLabel(chatBoxWidget);
+	chatIcon->setPixmap(chatRoundIconPixmap);
+	chatIcon->setFixedSize(iconSize, iconSize);
+	
 	QLabel *titleLabel = new QLabel(chatData.name, chatBoxWidget);
 	titleLabel->setStyleSheet(
 		"QLabel {"
@@ -81,6 +113,7 @@ void ChatList::add(const ChatData &chatData) {
 	);
 	
 	QHBoxLayout *chatBoxLayout = new QHBoxLayout(invisibleButton);
+	chatBoxLayout->addWidget(chatIcon);
 	chatBoxLayout->addWidget(titleLabel);
 	
 	scrollLayout->addWidget(chatBoxWidget);

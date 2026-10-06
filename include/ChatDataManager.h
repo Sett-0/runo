@@ -7,6 +7,7 @@ class QString;
 struct ChatData {
 	size_t id;
 	QString name;
+	QString iconPath;
 };
 
 class ChatDataManager {
