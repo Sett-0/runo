@@ -13,7 +13,7 @@ TopControl::TopControl(QWidget *parentWidget) : parentWidget(parentWidget) {
 	topControlWidget = new QWidget(parentWidget);
 	topControlWidget->setFixedHeight(Utils::noSystemDisplayScale(30));
 	topControlWidget->setObjectName("topControlWidget");
-	QString topControlWidgetStyle = loadStyleSheet("assets/topControl.qss");
+	QString topControlWidgetStyle = Utils::loadStyleSheet("assets/topControl.qss");
 	if (!topControlWidgetStyle.isEmpty()) 
 		topControlWidget->setStyleSheet(topControlWidgetStyle);
 	
@@ -50,16 +50,4 @@ TopControl::TopControl(QWidget *parentWidget) : parentWidget(parentWidget) {
 	topControlWidgetLayout->addWidget(minimizeWindowButton, Qt::AlignRight);
 	topControlWidgetLayout->addWidget(maximizeWindowButton, Qt::AlignRight);
 	topControlWidgetLayout->addWidget(closeWindowButton,    Qt::AlignRight);
-}
-
-QString TopControl::loadStyleSheet(const char *filePath) {
-	std::ifstream file(filePath);
-	if (!file.is_open()) {
-		return QString();
-	}
-	
-	std::stringstream buffer;
-	buffer << file.rdbuf();
-	
-	return QString::fromStdString(buffer.str());
 }

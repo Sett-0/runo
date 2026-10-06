@@ -3,8 +3,6 @@
 #include <QWidget>
 #include <QVBoxLayout>
 #include <QHBoxLayout>
-#include <QPixmap>
-#include <QPainter>
 #include <QLabel>
 #include <QPushButton>
 #include <sstream>
@@ -19,7 +17,7 @@ ChatList::ChatList(QWidget *parentWidget, ChatDataManager *chatDataManager) : pa
 	
 	scrollArea->setWidgetResizable(true);
 	scrollArea->setFrameShape(QFrame::NoFrame);
-	QString scrollAreaStyle = loadStyleSheet("assets/scrollArea.qss");
+	QString scrollAreaStyle = Utils::loadStyleSheet("assets/scrollArea.qss");
 	if (!scrollAreaStyle.isEmpty()) 
 		scrollArea->setStyleSheet(scrollAreaStyle);
 	
@@ -74,35 +72,10 @@ void ChatList::add(const ChatData &chatData) {
 	invisibleButtonLayout->setContentsMargins(0, 0, 0, 0);
 	invisibleButtonLayout->addWidget(invisibleButton);
 	
-	QPixmap chatIconPixmap(chatData.iconPath);
-	int iconSize = Utils::noSystemDisplayScale(60);
-	chatIconPixmap = chatIconPixmap.scaled(
-		iconSize, iconSize,
-		Qt::KeepAspectRatioByExpanding,
-		Qt::SmoothTransformation
-	);
-	
-	QPixmap chatRoundIconPixmap(iconSize, iconSize);
-	chatRoundIconPixmap.fill(Qt::transparent);
-	
-	QPainter painter(&chatRoundIconPixmap);
-	
-	painter.setRenderHint(QPainter::Antialiasing, true);
-	painter.setRenderHint(QPainter::SmoothPixmapTransform, true);
-	
-	painter.setBrush(Qt::black);
-	painter.setPen(Qt::NoPen);
-	
-	painter.drawEllipse(0, 0, iconSize, iconSize);
-	
-	painter.setCompositionMode(QPainter::CompositionMode_SourceIn);
-	painter.drawPixmap(0, 0, chatIconPixmap);
-	
-	painter.end();
-	
 	QLabel *chatIcon = new QLabel(chatBoxWidget);
-	chatIcon->setPixmap(chatRoundIconPixmap);
-	chatIcon->setFixedSize(iconSize, iconSize);
+	int iconSize = Utils::noSystemDisplayScale(60);
+	
+	Utils::setRoundIcon(chatIcon, chatData.iconPath, iconSize);
 	
 	QLabel *titleLabel = new QLabel(chatData.name, chatBoxWidget);
 	titleLabel->setStyleSheet(
@@ -214,16 +187,3 @@ void ChatList::filterChatList(const QString &query) {
 		}
 	}
 }
-
-QString ChatList::loadStyleSheet(const char *filePath) {
-	std::ifstream file(filePath);
-	if (!file.is_open()) {
-		return QString();
-	}
-	
-	std::stringstream buffer;
-	buffer << file.rdbuf();
-	
-	return QString::fromStdString(buffer.str());
-}
-

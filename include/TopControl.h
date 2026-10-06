@@ -22,8 +22,6 @@ public:
 	TopControlSignals* getSignals() { return &topControlSignals; };
 	QPushButton* getMaximizeWindowButton() { return maximizeWindowButton; };
 private:
-	QString loadStyleSheet(const char *filePath);
-
 	QWidget *parentWidget;
 	QWidget *topControlWidget;
 	QHBoxLayout *topControlWidgetLayout;
