@@ -2,8 +2,8 @@
 
 #include <vector>
 #include <QObject>
+#include <QString>
 
-class QString;
 class QScrollArea; 
 class QWidget; 
 class QVBoxLayout; 
@@ -18,7 +18,7 @@ struct ChatBox {
 class ChatBoxSignals : public QObject {
 	Q_OBJECT
 signals:
-	void chatBoxSelected(const QString &name);
+	void chatBoxSelected(const size_t id, const QString &name);
 };
 
 class ChatList {
@@ -27,9 +27,10 @@ public:
 	QScrollArea* getWidget() const { return scrollArea; };
 	ChatBoxSignals* getSignals() { return &chatBoxSignals; };
 	size_t getFocusedChatId() const { return focusedChatId; };
-	QString getNameById(const size_t id);
+	const QString getNameById(const size_t id);
 	void add(const ChatData &chatData);
-	void deleteById(const size_t id);
+	void deleteChat(const size_t id);
+	void deleteChat() { deleteChat(focusedChatId); }
 	void clearAll();
 	void filterChatList(const QString &query);
 private:

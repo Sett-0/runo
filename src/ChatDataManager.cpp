@@ -1,7 +1,3 @@
-#include <QString>
-
-#include <QDebug>
-
 #include "ChatDataManager.h"
 
 ChatDataManager::ChatDataManager() {
@@ -9,7 +5,7 @@ ChatDataManager::ChatDataManager() {
 		size_t id = i + 100;
 		QString name = QString("Friend %1").arg(i);
 		QString iconPath = QString("assets/default_avatar.png");
-		ChatData chatData = { id, name, iconPath };
+		ChatData chatData = { id, name, iconPath, { "Hello", QString("World! (%1)").arg(name) } };
 		add(chatData);
 	}
 }
@@ -21,6 +17,13 @@ void ChatDataManager::add(const ChatData &chatData) {
 ChatData* ChatDataManager::getChatData(const size_t id) {
 	for (auto &chatData : chatsData) {
 		if (chatData.id == id) return &chatData;
+	}
+	return nullptr;
+}
+
+std::vector<QString>* ChatDataManager::getChatMessages(const size_t id) {
+	for (auto &chatData : chatsData) {
+		if (chatData.id == id) return &chatData.messages;
 	}
 	return nullptr;
 }

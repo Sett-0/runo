@@ -21,6 +21,7 @@ add_executable(runo
 	src/ChatDataManager.cpp
 	src/ChatList.cpp
 	src/ChatWindowHeader.cpp
+	src/ChatWindowScrollArea.cpp
 	src/ChatWindow.cpp
 	src/InputMessage.cpp
 	
@@ -30,6 +31,7 @@ add_executable(runo
 	include/SearchBar.h
 	include/ChatList.h
 	include/ChatWindowHeader.h
+	include/ChatWindowScrollArea.h
 	include/ChatWindow.h
 	include/InputMessage.h
 )

@@ -16,6 +16,7 @@
 #include "ChatDataManager.h"
 #include "ChatList.h"
 #include "ChatWindowHeader.h"
+#include "ChatWindowScrollArea.h"
 #include "ChatWindow.h"
 #include "InputMessage.h"
 
@@ -57,7 +58,7 @@ MainWindow::MainWindow() {
 	chatWindowHeader = new ChatWindowHeader(centralWidget);
 	rightPanel->addWidget(chatWindowHeader->getWidget());
 	
-	chatWindow = new ChatWindow(centralWidget);
+	chatWindow = new ChatWindow(centralWidget, chatDataManager);
 	rightPanel->addWidget(chatWindow->getWidget());
 	
 	inputMessage = new InputMessage(centralWidget);
@@ -75,17 +76,20 @@ MainWindow::MainWindow() {
 	});
 	connect(topControl->getSignals(), &TopControlSignals::closeWindow, this, &QMainWindow::close);
 	
-	connect(searchBar->getSignals(), &SearchBarSignals::textChanged, this, 
-		[this](const QString &query) { chatList->filterChatList(query); });
+	connect(searchBar->getSignals(), &SearchBarSignals::textChanged, this, [this](const QString &query) { 
+		chatList->filterChatList(query); 
+	});
 	
-	connect(chatList->getSignals(), &ChatBoxSignals::chatBoxSelected, this, [this](const QString &name) { 
+	connect(chatList->getSignals(), &ChatBoxSignals::chatBoxSelected, this, [this](const size_t id, const QString &name) { 
 		chatWindowHeader->updateChatInfo(name);
-		inputMessage->showWidget();
+		chatWindow->showChat(id);
+		inputMessage->showWidget(id);
 	});
 	
 	connect(chatWindowHeader->getSignals(), &ChatWindowHeaderSignals::deleteChatPressed, this, [this]() { 
 		inputMessage->hideWidget();
-		chatList->deleteById(chatList->getFocusedChatId()); 
+		chatWindow->handleDeleteChat();
+		chatList->deleteChat(); 
 	});
 }
 

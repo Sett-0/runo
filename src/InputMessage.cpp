@@ -31,3 +31,13 @@ InputMessage::InputMessage(QWidget *parentWidget) : parentWidget(parentWidget) {
 	inputMessageWidgetLayout->addWidget(inputMessage);
 	inputMessageWidget->setHidden(true);
 }
+
+void InputMessage::showWidget(const size_t id) { 
+	chatId = id; 
+	inputMessageWidget->setHidden(false); 
+}
+
+void InputMessage::hideWidget() { 
+	chatId = 0; 
+	inputMessageWidget->setHidden(true); 
+}

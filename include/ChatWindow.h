@@ -1,30 +1,32 @@
 #pragma once 
 
-#include <QWidget>
-#include <QPixmap>
+#include <vector>
 
-class QPixmap;
-
-class ChatWindowWidget : public QWidget {
-	Q_OBJECT 
-public:
-	ChatWindowWidget(QWidget *parentWidget);
-protected:
-	void paintEvent(QPaintEvent *event) override;
-private:
-	QPixmap backgroundPixmap;
-};
-
+class QWidget;
+class ChatWindowScrollArea;
 class QVBoxLayout;
+class QHBoxLayout;
 class QLabel;
+class ChatDataManager;
 
 class ChatWindow {
 public:
-	ChatWindow(QWidget *parentWidget);
-	QWidget* getWidget() { return chatWindowWidget; }
+	ChatWindow(QWidget *parentWidget, ChatDataManager *chatDataManager);
+	ChatWindowScrollArea* getWidget() { return chatWindowScrollArea; }
+	void showChat(const size_t id);
+	void handleDeleteChat();
 private:
+	void addMessage(const QString &message);
+	void clearMessages();
+
 	QWidget *parentWidget;
-	ChatWindowWidget *chatWindowWidget;
-	QVBoxLayout *chatWindowWidgetLayout;
+	size_t chatId = 0;
+	ChatWindowScrollArea *chatWindowScrollArea;
+	QWidget *chatWindowPlaceholder;
+	QVBoxLayout *chatWindowPlaceholderLayout;
+	QWidget *chatWindowScrollContent;
+	QVBoxLayout *chatWindowScrollContentLayout;
 	QLabel *placeholderLabel;
+	ChatDataManager *chatDataManager;
+	std::vector<QLabel*> messages;
 };

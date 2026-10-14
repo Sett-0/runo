@@ -1,12 +1,9 @@
-#include <QString>
 #include <QScrollArea>
 #include <QWidget>
 #include <QVBoxLayout>
 #include <QHBoxLayout>
 #include <QLabel>
 #include <QPushButton>
-#include <sstream>
-#include <fstream>
 
 #include "ChatList.h"
 #include "ChatDataManager.h"
@@ -36,7 +33,7 @@ ChatList::ChatList(QWidget *parentWidget, ChatDataManager *chatDataManager) : pa
 	
 	scrollArea->setWidget(scrollContent);
 	
-	for (const auto &chatData : chatDataManager->getChatData()) add(chatData);
+	for (const auto &chatData : chatDataManager->getChatsData()) add(chatData);
 }
 
 void ChatList::add(const ChatData &chatData) {
@@ -64,7 +61,7 @@ void ChatList::add(const ChatData &chatData) {
 	QObject::connect(invisibleButton, &QPushButton::clicked, chatBoxWidget, 
 		[this, id = chatData.id, name = chatData.name]() { 
 			handleClickChatBox(id); 
-			emit chatBoxSignals.chatBoxSelected(name);
+			emit chatBoxSignals.chatBoxSelected(id, name);
 		} 
 	);
 	
@@ -95,7 +92,11 @@ void ChatList::add(const ChatData &chatData) {
 	chats.push_back(chatBox);
 }
 
-void ChatList::deleteById(const size_t id) {
+// TODO: I need to make it so the deletion of the chat propagates from the ChatDataManager 
+// and not from the ChatList. The ChatList must not call for chatDataManager->deleteById(id). The 
+// deletion query should come from the widget to the ChatDataManager using singals and then propagate 
+// up as an event or a signal from the ChatDataManager to update the data inside the other widgets.
+void ChatList::deleteChat(const size_t id) {
 	for (size_t i = 0; i < chats.size(); i++) {
 		if (chats[i].chatData->id == id) {
 			delete chats[i].chatBoxWidget;
@@ -116,7 +117,6 @@ void ChatList::clearAll() {
 	}
 	chats.clear();
 	chatDataManager->clearAll();
-	updateChatsData();
 }
 
 // TODO: This is a relational mess. Storing a part of one vector inside another leads to 
@@ -124,7 +124,7 @@ void ChatList::clearAll() {
 // The data is stored by reference, but it is still taking the time to update the pointers. 
 // Maybe refactor this system to something better instead?
 void ChatList::updateChatsData() {
-	auto &chatsData = chatDataManager->getChatData();
+	auto &chatsData = chatDataManager->getChatsData();
 	for (size_t i = 0; i < chatsData.size(); i++) {
 		chats[i].chatData = &chatsData[i];
 	}
@@ -164,13 +164,13 @@ void ChatList::handleClickChatBox(const size_t id) {
 	}
 }
 
-QString ChatList::getNameById(const size_t id) {
+const QString ChatList::getNameById(const size_t id) {
 	for (const auto &chat : chats) {
 		if (chat.chatData->id == id) {
 			return chat.chatData->name;
 		}
 	}
-	return "";
+	return QString();
 }
 
 void ChatList::filterChatList(const QString &query) {
